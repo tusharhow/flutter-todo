@@ -1,12 +1,11 @@
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_todo/models/all_todos.dart';
 import 'package:flutter_todo/models/generic_response.dart';
 import 'package:flutter_todo/services/urls.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-class TodoController extends ChangeNotifier {
+class TodoController extends GetxController {
   Future<GenericResponse> addTodo(String title, String desc) async {
     final response = await http.post(
       Uri.parse("$BASE_URL/todo"),
@@ -32,11 +31,10 @@ class TodoController extends ChangeNotifier {
     );
     if (response.statusCode == 200) {
       print(response.body);
-      todos.addAll(getTodosModelFromJson(response.body)!);
-      notifyListeners();
+      todos.addAll(getTodosModelFromJson(response.body));
+      update();
       return todos;
     } else {
-      print("$BASE_URL/todos");
       throw Exception('Failed to get todos');
     }
   }
@@ -63,9 +61,17 @@ class TodoController extends ChangeNotifier {
     );
     if (response.statusCode == 200) {
       print(response.body);
-      notifyListeners();
+
+      update();
     } else {
       throw Exception('Failed to update todo');
     }
+  }
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    getTodos();
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_todo/controllers/todo_controllers.dart';
-import 'package:flutter_todo/models/all_todos.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
 class TodoList extends StatefulWidget {
   const TodoList({Key? key}) : super(key: key);
@@ -11,13 +10,6 @@ class TodoList extends StatefulWidget {
 }
 
 class _TodoListState extends State<TodoList> {
-  @override
-  void initState() {
-    super.initState();
-    final controller = Provider.of<TodoController>(context, listen: false);
-    controller.getTodos();
-  }
-
   @override
   Widget build(BuildContext context) {
     TextEditingController titleController = TextEditingController();
@@ -34,7 +26,7 @@ class _TodoListState extends State<TodoList> {
           ),
         ),
         backgroundColor: Colors.deepPurple,
-        body: Consumer<TodoController>(builder: (context, val, _) {
+        body: GetBuilder<TodoController>(builder: (val) {
           if (val.todos.length == 0) {
             return Center(
               child: Text(
@@ -59,7 +51,7 @@ class _TodoListState extends State<TodoList> {
                       ),
                       key: UniqueKey(),
                       onDismissed: (direction) {
-                        val.deleteTodo(data.id);
+                        val.deleteTodo(data.id!);
                         ScaffoldMessenger.of(context)
                             .showSnackBar(const SnackBar(
                           content: Text(
@@ -76,13 +68,13 @@ class _TodoListState extends State<TodoList> {
                           margin: EdgeInsets.all(2),
                           child: ListTile(
                               title: Text(
-                                data.title,
+                                data.title!,
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold),
                               ),
-                              subtitle: Text(data.description,
+                              subtitle: Text(data.description!,
                                   style: TextStyle(
                                     color: Colors.black54,
                                     fontSize: 15,
@@ -97,7 +89,7 @@ class _TodoListState extends State<TodoList> {
                                       context: context,
                                       builder: (context) {
                                         return AlertDialog(
-                                          title: const Text('Edit Todo'),
+                                          title: const Text('Update Todo'),
                                           content: Column(
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
@@ -110,10 +102,10 @@ class _TodoListState extends State<TodoList> {
                                                                     .text
                                                                     .length >
                                                                 0
-                                                            ? TextEditingController(
+                                                            ? titleController
+                                                            : TextEditingController(
                                                                 text:
-                                                                    data.title)
-                                                            : titleController,
+                                                                    data.title),
                                                         decoration:
                                                             InputDecoration(
                                                           labelText: 'Title',
@@ -126,7 +118,7 @@ class _TodoListState extends State<TodoList> {
                                                           } else {
                                                             titleController
                                                                     .text =
-                                                                data.title;
+                                                                data.title!;
                                                           }
                                                         },
                                                         validator: (val) {
@@ -141,10 +133,10 @@ class _TodoListState extends State<TodoList> {
                                                                     .text
                                                                     .length >
                                                                 0
-                                                            ? TextEditingController(
+                                                            ? descController
+                                                            : TextEditingController(
                                                                 text: data
-                                                                    .description)
-                                                            : descController,
+                                                                    .description),
                                                         decoration:
                                                             InputDecoration(
                                                           labelText:
@@ -158,7 +150,7 @@ class _TodoListState extends State<TodoList> {
                                                           } else {
                                                             descController
                                                                     .text =
-                                                                data.description;
+                                                                data.description!;
                                                           }
                                                         },
                                                         validator: (val) {
@@ -185,7 +177,7 @@ class _TodoListState extends State<TodoList> {
                                                 if (formKey.currentState!
                                                     .validate()) {
                                                   val.updateTodo(
-                                                      data.id,
+                                                      data.id!,
                                                       titleController.text,
                                                       descController.text);
                                                   titleController.clear();
@@ -200,7 +192,7 @@ class _TodoListState extends State<TodoList> {
                                                     duration:
                                                         Duration(seconds: 2),
                                                   ));
-                                                  val.getTodos();
+                                                  // val.getTodos();
                                                 } else {}
                                               },
                                             ),

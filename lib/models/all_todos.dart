@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-List<GetTodosModel>? getTodosModelFromJson(String? str) =>
+List<GetTodosModel> getTodosModelFromJson(String? str) =>
     List<GetTodosModel>.from(
-        json.decode(str!)!.map((x) => GetTodosModel.fromJson(x)));
+        json.decode(str!).map((x) => GetTodosModel.fromJson(x)));
 
-String getTodosModelToJson(List<GetTodosModel>? data) =>
-    json.encode(List<dynamic>.from(data!.map((x) => x.toJson())));
+String getTodosModelToJson(List<GetTodosModel> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class GetTodosModel {
   GetTodosModel({
@@ -15,10 +15,10 @@ class GetTodosModel {
     required this.createdAt,
   });
 
-  String id;
-  String title;
-  String description;
-  DateTime createdAt;
+  String? id;
+  String? title;
+  String? description;
+  DateTime? createdAt;
 
   factory GetTodosModel.fromJson(Map<String, dynamic> json) => GetTodosModel(
         id: json["id"],
@@ -31,6 +31,6 @@ class GetTodosModel {
         "id": id,
         "title": title,
         "description": description,
-        "created_at": createdAt.toIso8601String(),
+        "created_at": createdAt!.toIso8601String(),
       };
 }
